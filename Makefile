@@ -5,8 +5,10 @@ TARGET = horus
 ALIAS = horus
 INSTALL_DIR = $(HOME)/bin/$(TARGET)
 PROJECT_DIR = $(shell pwd)
+DATE = $(shell date '+%Y-%m-%d %H:%M')
+GIT_LOG = $(shell git log --oneline -5 2>/dev/null || echo "Sem commits ainda")
 
-.PHONY: all clean install uninstall git-init git-push
+.PHONY: all clean install uninstall git-init git-push report
 
 all: $(TARGET)
 
@@ -65,3 +67,30 @@ git-push:
 github-create:
 	@gh repo create horustec --public --source=. --push 2>/dev/null || \
 		{ echo "Repo pode ja existir ou gh nao esta configurado."; echo "Crie manualmente em github.com e execute: git remote add origin <url>"; }
+
+report:
+	@echo "# ============================================" > RELATORIO.md
+	@echo "#          HORUSTEC - RELATORIO              " >> RELATORIO.md
+	@echo "# ============================================" >> RELATORIO.md
+	@echo "" >> RELATORIO.md
+	@echo "Versao: 1.0.0" >> RELATORIO.md
+	@echo "Atualizado: $(DATE)" >> RELATORIO.md
+	@echo "Repositorio: github.com/reneleonreguero/horustec" >> RELATORIO.md
+	@echo "" >> RELATORIO.md
+	@echo "--- MODULOS ---" >> RELATORIO.md
+	@echo "  [OK] Clientes  - CRUD completo" >> RELATORIO.md
+	@echo "  [OK] OS        - Ordens de servico" >> RELATORIO.md
+	@echo "  [OK] Pec~as    - Controle de estoque" >> RELATORIO.md
+	@echo "  [OK] Agenda    - Agendamentos" >> RELATORIO.md
+	@echo "" >> RELATORIO.md
+	@echo "--- COMANDOS PRINCIPAIS ---" >> RELATORIO.md
+	@echo "  horus cliente add -n <nome> [-t tel] [-e email]" >> RELATORIO.md
+	@echo "  horus os add -c <id> -e <equip> -p <problema>" >> RELATORIO.md
+	@echo "  horus pecas add -n <nome> [-q qtd] [-u custo]" >> RELATORIO.md
+	@echo "  horus agenda add -d <data> -h <hora>" >> RELATORIO.md
+	@echo "" >> RELATORIO.md
+	@echo "--- ULTIMOS COMMITS ---" >> RELATORIO.md
+	@$(shell echo '$(GIT_LOG)' | sed 's/^/  /') >> RELATORIO.md 2>/dev/null || true
+	@echo "" >> RELATORIO.md
+	@echo "Atualizado: $(DATE)" >> RELATORIO.md
+	@echo "Relatorio atualizado com sucesso!"
