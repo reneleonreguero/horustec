@@ -1,5 +1,6 @@
 #include "cliente.h"
 #include <stdio.h>
+#include <string.h>
 
 void cliente_add(char *nome, char *tel, char *email, char *endereco) {
     int id = csv_get_next_id(CLIENTE_FILE);
@@ -19,12 +20,13 @@ void cliente_list(void) {
     printf("%-3s | %-20s | %-15s | %-25s | %s\n", "ID", "NOME", "TELEFONE", "EMAIL", "ENDERECO");
     printf("----|----------------------|-----------------|---------------------------|---------------------------\n");
     for(int i = 0; i < data->count; i++) {
+        #define F(x) (x && strlen(x) > 0 ? x : "-")
         printf("%-3s | %-20s | %-15s | %-25s | %s\n",
             data->rows[i].fields[0],
-            data->rows[i].fields[1],
-            data->rows[i].fields[2],
-            data->rows[i].fields[3],
-            data->rows[i].fields[4]);
+            F(data->rows[i].fields[1]),
+            F(data->rows[i].fields[2]),
+            F(data->rows[i].fields[3]),
+            F(data->rows[i].fields[4]));
     }
     printf("\n");
     csv_free(data);
